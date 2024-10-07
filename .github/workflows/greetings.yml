@@ -1,12 +1,11 @@
 name: Greetings
 
-# Define custom permissions for GITHUB_TOKEN at the top level
 permissions:
-  actions: write        # Allows read and write access to GitHub Actions workflows
-  contents: write       # Read and write access to repository contents
-  issues: write         # Read and write access to issues
-  pull-requests: write  # Read and write access to pull requests
-  packages: write       # Upload and delete packages from GitHub Packages
+  actions: write
+  contents: write
+  issues: write
+  pull-requests: write
+  packages: write
 
 on:
   pull_request:
@@ -18,9 +17,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Use the GitHub-provided GITHUB_TOKEN with the modified permissions
+      - name: Install GitHub CLI
+        run: sudo apt-get install gh -y
+
       - name: Comment on Pull Request
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use the built-in GITHUB_TOKEN
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           gh pr comment ${{ github.event.pull_request.html_url }} --body "Thanks"
