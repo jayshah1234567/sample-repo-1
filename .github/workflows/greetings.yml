@@ -1,18 +1,22 @@
 name: Greetings
+
+permissions:
+  contents: write        
+  pull-requests: write   
+  issues: write          
+  actions: write         
+  packages: write
+
 on:
   pull_request:
-    types: [opened]
+    types:
+      - opened
 
 jobs:
-  thank-user:
-    runs-on: ubuntu-20.04
-    name: Say thanks for the PR
+  Greetings:
+    runs-on: ubuntu-latest
     steps:
-      - name: comment on the pull request
-        uses: hasura/comment-progress@v2.3.0
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          repository: "maniyaom/sample-repo"
-          number: ${{ github.event.number }}
-          id: thank-you-comment
-          message: "Thank you for opening this PR."
+      - env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}  # Use PAT_TOKEN with full permissions
+        run: |
+          gh pr comment ${{ github.event.pull_request.html_url }} --body "Thanks"
