@@ -1,11 +1,11 @@
 name: Greetings
 
 permissions:
-  actions: write
-  contents: write
-  issues: write
-  pull-requests: write
-  packages: write
+  actions: write        
+  contents: write       
+  issues: write         
+  pull-requests: write  
+  packages: write       
 
 on:
   pull_request:
@@ -17,11 +17,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install GitHub CLI
-        run: sudo apt-get install gh -y
-
       - name: Comment on Pull Request
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh pr comment ${{ github.event.pull_request.html_url }} --body "Thanks"
+          gh pr comment ${{ github.event.pull_request.html_url }} --body "Thanks for raising PR."
