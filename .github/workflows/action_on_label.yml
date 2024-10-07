@@ -1,0 +1,62 @@
+name: action_on_label
+on:
+  issues:
+    types:
+      - labeled
+  pull_request:
+    types:
+      - labeled
+
+jobs:
+  invalid_contribution:
+    if: github.event.action == 'labeled' && github.event.label.name == 'invalid'
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [[ "${{ github.event_name }}" == "issues" ]]; then
+            gh issue comment ${{ github.event.issue.html_url }} --body "@${{ github.event.issue.user.login }}
+            
+            Thank you for submitting this issue. After reviewing it, we have determined that it is invalid or does not align with our project requirement. If you believe this was a mistake, please provide more details or clarify the issue further. We appreciate your understanding and contributions."
+          fi
+  deployment_failed:
+    if: github.event.action == 'labeled' && github.event.label.name == 'failure'
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            gh pr comment ${{ github.event.pull_request.html_url }} --body "@${{ github.event.pull_request.user.login }}
+            
+            ⚠️ The deployment on Vercel has failed due to an error in your code. Please review the issues, fix them, and commit your changes to this pull request. Your contributions are important to us, and we appreciate your efforts! 💪"
+          fi
+  merge_and_close_issue_or_PR_on_level_assignment:
+    if: github.event.action == 'labeled' && startsWith(github.event.label.name, 'level')
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [[ "${{ github.event_name }}" == "issues" ]]; then
+            gh issue close ${{ github.event.issue.html_url }} \
+            --reason "completed"
+            
+          elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            gh pr merge ${{ github.event.pull_request.number }} --merge --repo ${{ github.repository }} --subject "Merge Merge pull request #${{ github.event.pull_request.number }} from ${{ github.event.pull_request.head.ref }}"
+          fi
+  duplicate_issue:
+    if: github.event.action == 'labeled' && github.event.label.name == 'duplicate'
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          if [[ "${{ github.event_name }}" == "issues" ]]; then
+          gh issue comment ${{ github.event.issue.html_url }} --body "@${{ github.event.issue.user.login }} 
+            
+            🔄 It looks like a duplicate issue has been raised. We kindly ask you to review the existing issues in our repository before submitting new ones. Please make sure to follow our [CODE OF CONDUCT](https://github.com/maniyaom/Movie-Ticket-Booking/blob/master/CODE_OF_CONDUCT.md) while participating. Your cooperation helps us maintain a clear and organized issue section! Thank you! 🙏"
+            gh issue close ${{ github.event.issue.html_url }} \
+            --reason "not planned"
+          fi
