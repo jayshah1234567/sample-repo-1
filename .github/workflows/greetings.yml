@@ -1,0 +1,22 @@
+name: Greetings
+on:
+  pull_request:
+    types:
+      - opened
+
+jobs:
+  Greetings:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh pr comment ${{ github.event.pull_request.html_url }} --body "@${{ github.event.pull_request.user.login }}
+            
+            Thank you for your Pull Request!
+            
+            We truly appreciate your contribution! 🙌
+            We will review the changes and provide feedback or merge the PR soon. 🔍
+            Please stay tuned for updates! 🔔
+            
+            🌟 Thank you for your efforts in improving the project! 🙏"
