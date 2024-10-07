@@ -1,4 +1,11 @@
 name: action_on_label
+
+actions: write        
+  contents: write       
+  issues: write         
+  pull-requests: write  
+  packages: write 
+  
 on:
   issues:
     types:
