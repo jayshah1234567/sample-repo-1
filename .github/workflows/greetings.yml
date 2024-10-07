@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}  # Use PAT instead of GITHUB_TOKEN
         run: |
           gh pr comment ${{ github.event.pull_request.html_url }} --body "@${{ github.event.pull_request.user.login }}
             
