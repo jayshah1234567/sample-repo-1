@@ -1,14 +1,18 @@
 name: Greetings
 on:
   pull_request:
-    types:
-      - opened
+    types: [opened]
 
 jobs:
-  Greetings:
-    runs-on: ubuntu-latest
+  thank-user:
+    runs-on: ubuntu-20.04
+    name: Say thanks for the PR
     steps:
-      - env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
-        run: |
-          gh pr comment ${{ github.event.pull_request.html_url }} --body "Thanks for raising PR"
+      - name: comment on the pull request
+        uses: hasura/comment-progress@v2.3.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          repository: "maniyaom/sample-repo"
+          number: ${{ github.event.number }}
+          id: thank-you-comment
+          message: "Thank you for opening this PR."
