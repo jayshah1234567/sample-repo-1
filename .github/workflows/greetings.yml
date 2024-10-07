@@ -1,11 +1,12 @@
 name: Greetings
 
+# Define custom permissions for GITHUB_TOKEN at the top level
 permissions:
-  contents: write
-  pull-requests: write
-  issues: write
-  actions: write
-  packages: write
+  actions: write        # Allows read and write access to GitHub Actions workflows
+  contents: write       # Read and write access to repository contents
+  issues: write         # Read and write access to issues
+  pull-requests: write  # Read and write access to pull requests
+  packages: write       # Upload and delete packages from GitHub Packages
 
 on:
   pull_request:
@@ -15,10 +16,11 @@ on:
 jobs:
   Greetings:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up GitHub CLI
-        uses: actions/setup-github-cli@v2
+      # Use the GitHub-provided GITHUB_TOKEN with the modified permissions
       - name: Comment on Pull Request
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Use the built-in GITHUB_TOKEN
         run: |
-          gh pr comment ${{ github.event.pull_request.html_url }} --body "Greetings, thanks for opening this pull request!"
+          gh pr comment ${{ github.event.pull_request.html_url }} --body "Thanks"
